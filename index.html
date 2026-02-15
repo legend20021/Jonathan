@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Jonathan Jerez Uribe | CIO Agricole</title>
+    
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2225%22 fill=%22%231d1d1f%22/><text x=%2250%22 y=%2265%22 font-family=%22sans-serif%22 font-size=%2250%22 fill=%22white%22 text-anchor=%22middle%22 font-weight=%22bold%22>JJ</text></svg>">
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
@@ -28,12 +31,11 @@
             font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue", sans-serif;
             background: var(--bg-app);
             height: 100vh;
-            /* Flex para centrar, pero asegurando espacio abajo */
             display: flex; justify-content: center; align-items: center;
             overflow: hidden;
         }
 
-        /* --- 1. SPLASH SCREEN (Cinemático) --- */
+        /* --- 1. SPLASH SCREEN --- */
         #splash {
             position: fixed; inset: 0; z-index: 9999;
             background: #fff;
@@ -51,12 +53,10 @@
         @keyframes blurIn { to { opacity: 1; filter: blur(0); } }
         @keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
 
-        /* --- 2. CONTENEDOR PRINCIPAL (AJUSTE IPHONE) --- */
+        /* --- 2. CONTENEDOR PRINCIPAL (IPHONE OPTIMIZED) --- */
         .app-card {
             width: 92%; max-width: 410px;
-            /* AQUÍ ESTÁ EL CAMBIO CLAVE: 85vh para dejar espacio abajo */
-            height: 85vh; 
-            max-height: 820px;
+            height: 85vh; max-height: 820px;
             background: var(--card-glass);
             backdrop-filter: var(--blur-strength); -webkit-backdrop-filter: var(--blur-strength);
             border-radius: var(--radius-card);
@@ -66,7 +66,6 @@
             opacity: 0; transform: scale(0.96);
             transition: all 0.8s 0.2s var(--anim-ease);
             overflow: hidden;
-            /* Margen inferior extra por seguridad */
             margin-bottom: 20px;
         }
         .app-card.visible { opacity: 1; transform: scale(1); }
@@ -162,9 +161,8 @@
         }
         .c-text { font-size: 12px; color: #444; line-height: 1.3; }
 
-        /* --- FOOTER (Compacto para iPhone) --- */
+        /* --- FOOTER COMPACTO --- */
         .footer {
-            /* Padding reducido abajo para evitar overlap */
             padding: 12px 20px 15px; 
             background: rgba(255,255,255,0.9);
             border-top: 1px solid var(--divider); text-align: center; flex-shrink: 0;
