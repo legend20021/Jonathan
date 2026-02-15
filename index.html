@@ -33,6 +33,8 @@
             height: 100vh;
             display: flex; justify-content: center; align-items: center;
             overflow: hidden;
+            /* Asegura que el contenido suba en móviles */
+            padding-bottom: 40px; 
         }
 
         /* --- 1. SPLASH SCREEN --- */
@@ -53,10 +55,14 @@
         @keyframes blurIn { to { opacity: 1; filter: blur(0); } }
         @keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
 
-        /* --- 2. CONTENEDOR PRINCIPAL (IPHONE OPTIMIZED) --- */
+        /* --- 2. CONTENEDOR PRINCIPAL (AJUSTE ULTRA-CORTO) --- */
         .app-card {
             width: 92%; max-width: 410px;
-            height: 85vh; max-height: 820px;
+            
+            /* ALTURA REDUCIDA AL 78% PARA SUBIRLA MUCHO MAS */
+            height: 78vh; 
+            max-height: 780px;
+
             background: var(--card-glass);
             backdrop-filter: var(--blur-strength); -webkit-backdrop-filter: var(--blur-strength);
             border-radius: var(--radius-card);
@@ -66,13 +72,15 @@
             opacity: 0; transform: scale(0.96);
             transition: all 0.8s 0.2s var(--anim-ease);
             overflow: hidden;
-            margin-bottom: 20px;
+            
+            /* MARGEN INFERIOR GRANDE PARA EVITAR LA BARRA DE NAVEGACION */
+            margin-bottom: 60px; 
         }
         .app-card.visible { opacity: 1; transform: scale(1); }
 
-        /* --- HEADER & IDIOMAS --- */
+        /* --- HEADER --- */
         .header {
-            padding: 20px 20px 10px; text-align: center; flex-shrink: 0; position: relative;
+            padding: 15px 20px 5px; text-align: center; flex-shrink: 0; position: relative;
         }
         
         .lang-switch {
@@ -88,7 +96,7 @@
         .lang-btn.active { background: #fff; color: #000; box-shadow: 0 2px 4px rgba(0,0,0,0.08); }
 
         .avatar-box {
-            width: 95px; height: 95px; margin: 0 auto 12px; position: relative;
+            width: 90px; height: 90px; margin: 0 auto 10px; position: relative;
             cursor: pointer; transition: transform 0.2s;
         }
         .avatar-box:active { transform: scale(0.95); }
@@ -102,8 +110,8 @@
             display: flex; align-items: center; justify-content: center; border: 2px solid #fff;
         }
 
-        .user-name { font-size: 22px; font-weight: 700; color: var(--text-main); letter-spacing: -0.5px; margin-bottom: 2px; }
-        .user-role { font-size: 12px; color: var(--accent); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+        .user-name { font-size: 20px; font-weight: 700; color: var(--text-main); letter-spacing: -0.5px; margin-bottom: 2px; }
+        .user-role { font-size: 11px; color: var(--accent); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
 
         /* --- CONTENIDO SCROLL --- */
         .scroll-view {
@@ -115,14 +123,14 @@
         /* --- ACORDEÓN --- */
         .section-group {
             background: #fff; border-radius: var(--radius-elem);
-            margin-bottom: 12px; overflow: hidden;
+            margin-bottom: 10px; overflow: hidden;
             box-shadow: 0 2px 10px rgba(0,0,0,0.02);
             transition: box-shadow 0.3s; border: 1px solid var(--divider);
         }
         .section-group.active { box-shadow: 0 8px 25px rgba(0,0,0,0.06); border-color: transparent; }
 
         .sec-header {
-            padding: 16px; display: flex; justify-content: space-between; align-items: center;
+            padding: 14px 16px; display: flex; justify-content: space-between; align-items: center;
             cursor: pointer; font-size: 14px; font-weight: 600; color: var(--text-main);
             background: #fff; z-index: 2; position: relative;
         }
@@ -137,42 +145,43 @@
 
         /* --- CARDS DE TRABAJO --- */
         .job-item {
-            background: #f9f9fc; border-radius: 12px; padding: 14px; margin-bottom: 10px;
+            background: #f9f9fc; border-radius: 12px; padding: 12px; margin-bottom: 8px;
             border-left: 3px solid transparent; position: relative;
         }
         .job-item.current { background: var(--accent-bg); border-left-color: var(--accent); }
         
-        .j-title { font-size: 13px; font-weight: 700; color: #000; margin-bottom: 2px; }
-        .j-company { font-size: 11px; color: var(--accent); font-weight: 600; display: flex; justify-content: space-between; }
+        .j-title { font-size: 12px; font-weight: 700; color: #000; margin-bottom: 2px; }
+        .j-company { font-size: 10px; color: var(--accent); font-weight: 600; display: flex; justify-content: space-between; }
         .j-date { color: #888; font-weight: 400; }
+        .j-desc { margin-top: 6px; padding-left: 14px; font-size: 11px; color: #555; line-height: 1.5; }
         
-        .j-desc { margin-top: 8px; padding-left: 14px; font-size: 12px; color: #555; line-height: 1.5; }
-        .j-desc li { margin-bottom: 4px; }
-
         /* --- LISTA CURSOS --- */
         .course-row {
-            display: flex; gap: 10px; align-items: flex-start; padding: 8px 0;
+            display: flex; gap: 10px; align-items: flex-start; padding: 6px 0;
             border-bottom: 1px solid #f0f0f0;
         }
         .course-row:last-child { border-bottom: none; }
         .c-badge {
-            background: #eee; color: #555; font-size: 10px; font-weight: 700;
-            padding: 2px 6px; border-radius: 6px; min-width: 40px; text-align: center; margin-top: 2px;
+            background: #eee; color: #555; font-size: 9px; font-weight: 700;
+            padding: 2px 5px; border-radius: 6px; min-width: 35px; text-align: center; margin-top: 2px;
         }
-        .c-text { font-size: 12px; color: #444; line-height: 1.3; }
+        .c-text { font-size: 11px; color: #444; line-height: 1.3; }
 
-        /* --- FOOTER COMPACTO --- */
+        /* --- FOOTER (SAFE AREA iOS) --- */
         .footer {
-            padding: 12px 20px 15px; 
+            /* Padding inferior dinámico para iPhone X/11/12/13/14/15 */
+            padding: 10px 20px 15px; 
+            padding-bottom: max(15px, env(safe-area-inset-bottom));
+            
             background: rgba(255,255,255,0.9);
             border-top: 1px solid var(--divider); text-align: center; flex-shrink: 0;
         }
         .btn-action {
-            background: #111; color: #fff; width: 100%; padding: 14px;
-            border-radius: 14px; font-size: 14px; font-weight: 600; border: none;
+            background: #111; color: #fff; width: 100%; padding: 12px;
+            border-radius: 12px; font-size: 13px; font-weight: 600; border: none;
             display: flex; justify-content: center; gap: 8px; align-items: center;
             cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-            margin-bottom: 12px; transition: transform 0.2s;
+            margin-bottom: 10px; transition: transform 0.2s;
         }
         .btn-action:active { transform: scale(0.98); }
 
@@ -234,7 +243,7 @@
                 </div>
                 <div class="sec-content">
                     <div class="sec-padding">
-                        <p style="font-size:13px; color:#555; line-height:1.6;" data-key="txt_profile">
+                        <p style="font-size:12px; color:#555; line-height:1.6;" data-key="txt_profile">
                             CIO e Ingeniero Mecánico con enfoque en innovación agroindustrial. Especialista en certificaciones orgánicas internacionales (USDA, LPO) y desarrollo de hardware I+D. Transformo requerimientos técnicos complejos en soluciones industriales escalables.
                         </p>
                     </div>
@@ -329,7 +338,7 @@
                             <div class="j-company">UIS <span class="j-date">2014 - 2016</span></div>
                         </div>
 
-                        <div style="margin:15px 0 8px; font-size:11px; font-weight:700; color:#aaa; letter-spacing:1px;">SENA CERTIFICATIONS</div>
+                        <div style="margin:15px 0 8px; font-size:10px; font-weight:700; color:#aaa; letter-spacing:1px;">SENA CERTIFICATIONS</div>
                         
                         <div class="course-list-container">
                             <div class="course-row"><span class="c-badge">2020</span><span class="c-text" data-key="c_excav">Simulación Virtual de Excavadora</span></div>
@@ -355,7 +364,7 @@
                 <a href="https://linkedin.com/in/jonathan-jerez-uribe-501790288" class="s-icon"><i class="fab fa-linkedin"></i></a>
                 <a href="mailto:jonathanuis2014@gmail.com" class="s-icon"><i class="fas fa-envelope"></i></a>
             </div>
-            <div style="font-size:10px; color:#bbb; margin-top:10px;">jonathanuis2014@gmail.com</div>
+            <div style="font-size:10px; color:#bbb; margin-top:8px;">jonathanuis2014@gmail.com</div>
         </div>
 
     </div>
