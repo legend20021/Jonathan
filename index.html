@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Jonathan Jerez Uribe | CIO Agricole</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* --- ESTILO "GLASS EXECUTIVE" 2026 --- */
+        :root {
+            --bg-app: #f0f0f5;
+            --card-glass: rgba(255, 255, 255, 0.94);
+            --blur-strength: blur(25px);
+            --text-main: #1d1d1f;
+            --text-muted: #86868b;
+            --accent: #0071e3; /* Azul Apple Pro */
+            --accent-bg: rgba(0, 113, 227, 0.08);
+            --divider: rgba(0,0,0,0.06);
+            --radius-card: 28px;
+            --radius-elem: 16px;
+            --anim-ease: cubic-bezier(0.33, 1, 0.68, 1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue", sans-serif;
+            background: var(--bg-app);
+            height: 100vh;
+            display: flex; justify-content: center; align-items: center;
+            overflow: hidden;
+        }
+
+        /* --- 1. SPLASH SCREEN (Cinemático) --- */
+        #splash {
+            position: fixed; inset: 0; z-index: 9999;
+            background: #fff;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            transition: opacity 0.8s ease, visibility 0.8s;
+        }
+        .splash-title {
+            font-size: 22px; font-weight: 300; letter-spacing: 3px; color: #000;
+            animation: blurIn 1.2s var(--anim-ease) forwards; opacity: 0; filter: blur(10px);
+        }
+        .splash-sub {
+            font-size: 10px; letter-spacing: 4px; color: #999; margin-top: 12px;
+            animation: fadeUp 1s 0.4s var(--anim-ease) forwards; opacity: 0; transform: translateY(10px);
+        }
+        @keyframes blurIn { to { opacity: 1; filter: blur(0); } }
+        @keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
+
+        /* --- 2. CONTENEDOR PRINCIPAL --- */
+        .app-card {
+            width: 92%; max-width: 410px;
+            height: 94vh; max-height: 860px;
+            background: var(--card-glass);
+            backdrop-filter: var(--blur-strength); -webkit-backdrop-filter: var(--blur-strength);
+            border-radius: var(--radius-card);
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.15);
+            border: 1px solid rgba(255,255,255,0.8);
+            display: flex; flex-direction: column;
+            opacity: 0; transform: scale(0.96);
+            transition: all 0.8s 0.2s var(--anim-ease);
+            overflow: hidden;
+        }
+        .app-card.visible { opacity: 1; transform: scale(1); }
+
+        /* --- HEADER & IDIOMAS --- */
+        .header {
+            padding: 20px 20px 10px; text-align: center; flex-shrink: 0; position: relative;
+        }
+        
+        .lang-switch {
+            position: absolute; top: 20px; right: 20px;
+            background: rgba(0,0,0,0.04); padding: 3px; border-radius: 12px;
+            display: flex; gap: 2px;
+        }
+        .lang-btn {
+            border: none; background: none; padding: 4px 8px;
+            font-size: 10px; font-weight: 600; color: #999;
+            cursor: pointer; border-radius: 9px; transition: 0.2s;
+        }
+        .lang-btn.active { background: #fff; color: #000; box-shadow: 0 2px 4px rgba(0,0,0,0.08); }
+
+        .avatar-box {
+            width: 95px; height: 95px; margin: 0 auto 12px; position: relative;
+            cursor: pointer; transition: transform 0.2s;
+        }
+        .avatar-box:active { transform: scale(0.95); }
+        .avatar {
+            width: 100%; height: 100%; border-radius: 50%; object-fit: cover;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1); border: 3px solid #fff;
+        }
+        .expand-icon {
+            position: absolute; bottom: 0; right: 0; background: var(--text-main); color: #fff;
+            width: 24px; height: 24px; border-radius: 50%; font-size: 10px;
+            display: flex; align-items: center; justify-content: center; border: 2px solid #fff;
+        }
+
+        .user-name { font-size: 22px; font-weight: 700; color: var(--text-main); letter-spacing: -0.5px; margin-bottom: 2px; }
+        .user-role { font-size: 12px; color: var(--accent); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+
+        /* --- CONTENIDO SCROLL --- */
+        .scroll-view {
+            flex: 1; overflow-y: auto; padding: 10px 15px;
+            scrollbar-width: none;
+        }
+        .scroll-view::-webkit-scrollbar { display: none; }
+
+        /* --- ACORDEÓN --- */
+        .section-group {
+            background: #fff; border-radius: var(--radius-elem);
+            margin-bottom: 12px; overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.02);
+            transition: box-shadow 0.3s; border: 1px solid var(--divider);
+        }
+        .section-group.active { box-shadow: 0 8px 25px rgba(0,0,0,0.06); border-color: transparent; }
+
+        .sec-header {
+            padding: 16px; display: flex; justify-content: space-between; align-items: center;
+            cursor: pointer; font-size: 14px; font-weight: 600; color: var(--text-main);
+            background: #fff; z-index: 2; position: relative;
+        }
+        .arrow { font-size: 12px; color: #ccc; transition: transform 0.4s var(--anim-ease); }
+        .section-group.active .arrow { transform: rotate(180deg); color: var(--accent); }
+
+        .sec-content {
+            max-height: 0; overflow: hidden; transition: max-height 0.5s var(--anim-ease);
+            background: #fff;
+        }
+        .sec-padding { padding: 0 16px 20px; }
+
+        /* --- CARDS DE TRABAJO (Micro-Cards) --- */
+        .job-item {
+            background: #f9f9fc; border-radius: 12px; padding: 14px; margin-bottom: 10px;
+            border-left: 3px solid transparent; position: relative;
+        }
+        .job-item.current { background: var(--accent-bg); border-left-color: var(--accent); }
+        
+        .j-title { font-size: 13px; font-weight: 700; color: #000; margin-bottom: 2px; }
+        .j-company { font-size: 11px; color: var(--accent); font-weight: 600; display: flex; justify-content: space-between; }
+        .j-date { color: #888; font-weight: 400; }
+        
+        .j-desc { margin-top: 8px; padding-left: 14px; font-size: 12px; color: #555; line-height: 1.5; }
+        .j-desc li { margin-bottom: 4px; }
+
+        /* --- LISTA CURSOS --- */
+        .course-row {
+            display: flex; gap: 10px; align-items: flex-start; padding: 8px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        .course-row:last-child { border-bottom: none; }
+        .c-badge {
+            background: #eee; color: #555; font-size: 10px; font-weight: 700;
+            padding: 2px 6px; border-radius: 6px; min-width: 40px; text-align: center; margin-top: 2px;
+        }
+        .c-text { font-size: 12px; color: #444; line-height: 1.3; }
+
+        /* --- FOOTER --- */
+        .footer {
+            padding: 15px 20px 20px; background: rgba(255,255,255,0.9);
+            border-top: 1px solid var(--divider); text-align: center; flex-shrink: 0;
+        }
+        .btn-action {
+            background: #111; color: #fff; width: 100%; padding: 14px;
+            border-radius: 14px; font-size: 14px; font-weight: 600; border: none;
+            display: flex; justify-content: center; gap: 8px; align-items: center;
+            cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            margin-bottom: 15px; transition: transform 0.2s;
+        }
+        .btn-action:active { transform: scale(0.98); }
+
+        .social-bar { display: flex; justify-content: center; gap: 25px; }
+        .s-icon { font-size: 20px; color: #b0b0b0; transition: color 0.3s; text-decoration: none; }
+        .s-icon:hover { color: var(--text-main); }
+
+        /* --- LIGHTBOX --- */
+        #lightbox {
+            position: fixed; inset: 0; z-index: 10000;
+            background: rgba(255,255,255,0.6); backdrop-filter: blur(30px);
+            display: flex; justify-content: center; align-items: center;
+            opacity: 0; pointer-events: none; transition: opacity 0.3s;
+        }
+        #lightbox.open { opacity: 1; pointer-events: all; }
+        .lb-img {
+            width: 280px; height: 280px; border-radius: 50%; object-fit: cover;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.2); transform: scale(0.8); transition: transform 0.4s var(--anim-ease);
+        }
+        #lightbox.open .lb-img { transform: scale(1); }
+
+    </style>
+</head>
+<body>
+
+    <div id="splash">
+        <div class="splash-title">JONATHAN JEREZ</div>
+        <div class="splash-sub">ENGINEERING & INNOVATION</div>
+    </div>
+
+    <div id="lightbox" onclick="toggleLightbox()">
+        <img src="foto.jpg" class="lb-img" onclick="event.stopPropagation()">
+    </div>
+
+    <div class="app-card">
+        
+        <div class="header">
+            <div class="lang-switch">
+                <button class="lang-btn active" onclick="changeLang('es', this)">ES</button>
+                <button class="lang-btn" onclick="changeLang('en', this)">EN</button>
+                <button class="lang-btn" onclick="changeLang('zh', this)">CN</button>
+            </div>
+            
+            <div class="avatar-box" onclick="toggleLightbox()">
+                <img src="foto.jpg" alt="Jonathan" class="avatar">
+                <div class="expand-icon"><i class="fas fa-expand"></i></div>
+            </div>
+
+            <h1 class="user-name">Jonathan Jerez Uribe</h1>
+            <h2 class="user-role" data-key="role_main">Chief Innovation Officer (CIO)</h2>
+        </div>
+
+        <div class="scroll-view">
+            
+            <div class="section-group">
+                <div class="sec-header" onclick="toggleSec(this)">
+                    <span data-key="sec_profile">Perfil Profesional</span>
+                    <i class="fas fa-chevron-down arrow"></i>
+                </div>
+                <div class="sec-content">
+                    <div class="sec-padding">
+                        <p style="font-size:13px; color:#555; line-height:1.6;" data-key="txt_profile">
+                            CIO e Ingeniero Mecánico con enfoque en innovación agroindustrial. Especialista en certificaciones orgánicas internacionales (USDA, LPO) y desarrollo de hardware I+D. Transformo requerimientos técnicos complejos en soluciones industriales escalables.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section-group">
+                <div class="sec-header" onclick="toggleSec(this)">
+                    <span data-key="sec_exp">Trayectoria Profesional</span>
+                    <i class="fas fa-chevron-down arrow"></i>
+                </div>
+                <div class="sec-content">
+                    <div class="sec-padding">
+                        
+                        <div class="job-item current">
+                            <div class="j-title">Chief Innovation Officer (CIO)</div>
+                            <div class="j-company">AGRICOLE MX <span class="j-date" data-key="date_present">2025 - Presente</span></div>
+                            <ul class="j-desc" data-key="desc_agricole">
+                                <li>Gestión de certificaciones orgánicas (Ecocert, USDA, LPO).</li>
+                                <li>Implementación de sistemas de gestión y trazabilidad.</li>
+                            </ul>
+                        </div>
+
+                        <div class="job-item current">
+                            <div class="j-title">CEO & Founder</div>
+                            <div class="j-company">ZENIT IA <span class="j-date" data-key="date_present">2025 - Presente</span></div>
+                            <ul class="j-desc" data-key="desc_zenit">
+                                <li>Soluciones de control industrial con Inteligencia Artificial.</li>
+                                <li>Desarrollo de sistemas embebidos de bajo costo.</li>
+                            </ul>
+                        </div>
+
+                        <div class="job-item">
+                            <div class="j-title" data-key="role_penagos">Diseñador Senior I+D</div>
+                            <div class="j-company">PENAGOS Y HERMANOS <span class="j-date">2023 - 2025</span></div>
+                            <ul class="j-desc" data-key="desc_penagos">
+                                <li>Diseño de maquinaria y simulaciones FEA/CFD.</li>
+                                <li>Validación técnica de nuevos productos.</li>
+                            </ul>
+                        </div>
+
+                        <div class="job-item">
+                            <div class="j-title">Co-Founder & CTO</div>
+                            <div class="j-company">AROBOT LLC <span class="j-date">2021 - 2023</span></div>
+                            <ul class="j-desc" data-key="desc_arobot">
+                                <li>Modelado y construcción de prototipos robóticos.</li>
+                            </ul>
+                        </div>
+
+                        <div class="job-item">
+                            <div class="j-title" data-key="role_uis">Laborista Sistemas Térmicos</div>
+                            <div class="j-company">UIS SANTANDER <span class="j-date">2019 - 2021</span></div>
+                            <ul class="j-desc" data-key="desc_uis">
+                                <li>Instructor de bancos térmicos y toma de datos.</li>
+                            </ul>
+                        </div>
+
+                        <div class="job-item">
+                            <div class="j-title" data-key="role_kia">Ing. Mantenimiento (Pasante)</div>
+                            <div class="j-company">KIA GRECCO <span class="j-date">2019 - 2020</span></div>
+                            <ul class="j-desc" data-key="desc_kia">
+                                <li>Implementación de formatos RCM y guías operativas.</li>
+                            </ul>
+                        </div>
+
+                         <div class="job-item">
+                            <div class="j-title" data-key="role_metal">Operario & Soldador</div>
+                            <div class="j-company">METÁLICAS MARTÍN <span class="j-date">2013 - 2019</span></div>
+                            <ul class="j-desc" data-key="desc_metal">
+                                <li>Soldadura de arco eléctrico y montaje estructural.</li>
+                            </ul>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="section-group">
+                <div class="sec-header" onclick="toggleSec(this)">
+                    <span data-key="sec_edu">Educación & Cursos</span>
+                    <i class="fas fa-chevron-down arrow"></i>
+                </div>
+                <div class="sec-content">
+                    <div class="sec-padding">
+                        
+                        <div class="job-item">
+                            <div class="j-title" data-key="edu_mech">Ingeniero Mecánico</div>
+                            <div class="j-company">UIS <span class="j-date">2016 - 2020</span></div>
+                        </div>
+                        <div class="job-item">
+                            <div class="j-title" data-key="edu_sys">Ingeniería de Sistemas (8 Sem.)</div>
+                            <div class="j-company">UIS <span class="j-date">2014 - 2016</span></div>
+                        </div>
+
+                        <div style="margin:15px 0 8px; font-size:11px; font-weight:700; color:#aaa; letter-spacing:1px;">SENA CERTIFICATIONS</div>
+                        
+                        <div class="course-list-container">
+                            <div class="course-row"><span class="c-badge">2020</span><span class="c-text" data-key="c_excav">Simulación Virtual de Excavadora</span></div>
+                            <div class="course-row"><span class="c-badge">2020</span><span class="c-text" data-key="c_vehi">Componentes del Vehículo (Caja de Cambios)</span></div>
+                            <div class="course-row"><span class="c-badge">2020</span><span class="c-text" data-key="c_hydra">Tecnología Hidráulica Automatizada</span></div>
+                            <div class="course-row"><span class="c-badge">2019</span><span class="c-text" data-key="c_plans">Interpretación de Planos Industriales</span></div>
+                            <div class="course-row"><span class="c-badge">2018</span><span class="c-text" data-key="c_cnc_t">Torno Básico CNC (Mastercam)</span></div>
+                            <div class="course-row"><span class="c-badge">2018</span><span class="c-text" data-key="c_cnc_f">Fresadora Básica CNC (Mastercam)</span></div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="footer">
+            <button class="btn-action" onclick="downloadVCard()">
+                <i class="fas fa-address-card"></i> <span data-key="btn_save">Guardar Contacto</span>
+            </button>
+            <div class="social-bar">
+                <a href="https://wa.me/573187284464" class="s-icon"><i class="fab fa-whatsapp"></i></a>
+                <a href="https://linkedin.com/in/jonathan-jerez-uribe-501790288" class="s-icon"><i class="fab fa-linkedin"></i></a>
+                <a href="mailto:jonathanuis2014@gmail.com" class="s-icon"><i class="fas fa-envelope"></i></a>
+            </div>
+            <div style="font-size:10px; color:#bbb; margin-top:10px;">jonathanuis2014@gmail.com</div>
+        </div>
+
+    </div>
+
+    <script>
+        // --- 1. DATA DICTIONARY ---
+        const translations = {
+            es: {
+                role_main: "Chief Innovation Officer (CIO)",
+                sec_profile: "Perfil Profesional",
+                txt_profile: "CIO e Ingeniero Mecánico con enfoque en innovación agroindustrial. Especialista en certificaciones orgánicas internacionales (USDA, LPO) y desarrollo de hardware I+D. Transformo requerimientos técnicos complejos en soluciones industriales escalables.",
+                sec_exp: "Trayectoria Profesional",
+                date_present: "2025 - Presente",
+                desc_agricole: "<li>Gestión de certificaciones orgánicas (Ecocert, USDA, LPO).</li><li>Implementación de sistemas de gestión y trazabilidad.</li>",
+                desc_zenit: "<li>Soluciones de control industrial con Inteligencia Artificial.</li><li>Desarrollo de sistemas embebidos de bajo costo.</li>",
+                role_penagos: "Diseñador Senior I+D",
+                desc_penagos: "<li>Diseño de maquinaria y simulaciones FEA/CFD.</li><li>Validación técnica de nuevos productos.</li>",
+                desc_arobot: "<li>Modelado y construcción de prototipos robóticos.</li>",
+                role_uis: "Laborista Sistemas Térmicos",
+                desc_uis: "<li>Instructor de bancos térmicos y toma de datos.</li>",
+                role_kia: "Ing. Mantenimiento (Pasante)",
+                desc_kia: "<li>Implementación de formatos RCM y guías operativas.</li>",
+                role_metal: "Operario & Soldador",
+                desc_metal: "<li>Soldadura de arco eléctrico y montaje estructural.</li>",
+                sec_edu: "Educación & Cursos",
+                edu_mech: "Ingeniero Mecánico",
+                edu_sys: "Ingeniería de Sistemas (8 Sem.)",
+                c_excav: "Simulación Virtual de Excavadora",
+                c_vehi: "Componentes del Vehículo (Caja de Cambios)",
+                c_hydra: "Tecnología Hidráulica Automatizada",
+                c_plans: "Interpretación de Planos Industriales",
+                c_cnc_t: "Torno Básico CNC (Mastercam)",
+                c_cnc_f: "Fresadora Básica CNC (Mastercam)",
+                btn_save: "Guardar Contacto"
+            },
+            en: {
+                role_main: "Chief Innovation Officer (CIO)",
+                sec_profile: "Professional Profile",
+                txt_profile: "CIO and Mechanical Engineer focused on agro-industrial innovation. Specialist in international organic certifications (USDA, LPO) and R&D hardware development. I transform complex technical requirements into scalable industrial solutions.",
+                sec_exp: "Professional Experience",
+                date_present: "2025 - Present",
+                desc_agricole: "<li>Organic certification management (Ecocert, USDA, LPO).</li><li>Implementation of management and traceability systems.</li>",
+                desc_zenit: "<li>Industrial control solutions with Artificial Intelligence.</li><li>Development of low-cost embedded systems.</li>",
+                role_penagos: "Senior R&D Designer",
+                desc_penagos: "<li>Machinery design and FEA/CFD simulations.</li><li>Technical validation of new products.</li>",
+                desc_arobot: "<li>Modeling and construction of robotic prototypes.</li>",
+                role_uis: "Thermal Systems Lab Assistant",
+                desc_uis: "<li>Thermal bench instructor and data collection.</li>",
+                role_kia: "Maintenance Eng. (Intern)",
+                desc_kia: "<li>Implementation of RCM formats and operating guides.</li>",
+                role_metal: "Operator & Welder",
+                desc_metal: "<li>Electric arc welding and structural assembly.</li>",
+                sec_edu: "Education & Courses",
+                edu_mech: "Mechanical Engineer",
+                edu_sys: "Systems Engineering (8 Sem.)",
+                c_excav: "Virtual Excavator Simulation",
+                c_vehi: "Vehicle Components (Gearbox)",
+                c_hydra: "Automated Hydraulic Technology",
+                c_plans: "Industrial Blueprint Reading",
+                c_cnc_t: "Basic CNC Lathe (Mastercam)",
+                c_cnc_f: "Basic CNC Milling (Mastercam)",
+                btn_save: "Save Contact"
+            },
+            zh: {
+                role_main: "首席创新官 (CIO)",
+                sec_profile: "个人简介",
+                txt_profile: "首席信息官和机械工程师，专注于农用工业创新。国际有机认证（USDA，LPO）和研发硬件开发专家。我将复杂的技术要求转化为可扩展的工业解决方案。",
+                sec_exp: "职业经历",
+                date_present: "2025 - 至今",
+                desc_agricole: "<li>有机认证管理（Ecocert，USDA，LPO）。</li><li>实施管理和可追溯系统。</li>",
+                desc_zenit: "<li>具有人工智能的工业控制解决方案。</li><li>开发低成本嵌入式系统。</li>",
+                role_penagos: "高级研发设计师",
+                desc_penagos: "<li>机械设计和FEA/CFD模拟。</li><li>新产品的技术验证。</li>",
+                desc_arobot: "<li>机器人原型的建模和构造。</li>",
+                role_uis: "热系统实验室助理",
+                desc_uis: "<li>热工台讲师和数据采集。</li>",
+                role_kia: "维修工程师（实习）",
+                desc_kia: "<li>实施RCM格式和操作指南。</li>",
+                role_metal: "操作员和焊工",
+                desc_metal: "<li>电弧焊和结构组装。</li>",
+                sec_edu: "教育与课程",
+                edu_mech: "机械工程师",
+                edu_sys: "系统工程（8个学期）",
+                c_excav: "虚拟挖掘机模拟",
+                c_vehi: "车辆部件（变速箱）",
+                c_hydra: "自动化液压技术",
+                c_plans: "工业蓝图解读",
+                c_cnc_t: "基本数控车床 (Mastercam)",
+                c_cnc_f: "基本数控铣削 (Mastercam)",
+                btn_save: "保存联系人"
+            }
+        };
+
+        // --- 2. LOGIC ---
+        
+        // Splash
+        window.onload = () => {
+            setTimeout(() => {
+                document.getElementById('splash').style.opacity = '0';
+                document.getElementById('splash').style.visibility = 'hidden';
+                document.querySelector('.app-card').classList.add('visible');
+            }, 1800);
+        };
+
+        // Translations
+        function changeLang(lang, btn) {
+            document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            
+            document.querySelectorAll('[data-key]').forEach(el => {
+                const k = el.getAttribute('data-key');
+                if(translations[lang][k]) {
+                    el.innerHTML = translations[lang][k];
+                }
+            });
+            
+            // Recalculate height of open accordion
+            const activeContent = document.querySelector('.section-group.active .sec-content');
+            if(activeContent) activeContent.style.maxHeight = activeContent.scrollHeight + "px";
+        }
+
+        // Accordion
+        function toggleSec(header) {
+            const group = header.parentElement;
+            const content = header.nextElementSibling;
+            const isActive = group.classList.contains('active');
+            
+            document.querySelectorAll('.section-group').forEach(s => {
+                s.classList.remove('active');
+                s.querySelector('.sec-content').style.maxHeight = null;
+            });
+            
+            if(!isActive) {
+                group.classList.add('active');
+                content.style.maxHeight = content.scrollHeight + "px";
+            }
+        }
+
+        // Lightbox
+        function toggleLightbox() {
+            document.getElementById('lightbox').classList.toggle('open');
+        }
+
+        // vCard
+        function downloadVCard() {
+            const vcard = `BEGIN:VCARD
+VERSION:3.0
+N:Jerez;Jonathan;;Ing.;
+FN:Ing. Jonathan Jerez Uribe
+ORG:Agricole
+TITLE:Chief Innovation Officer (CIO)
+TEL;TYPE=CELL:+573187284464
+EMAIL:jonathanuis2014@gmail.com
+URL:https://linkedin.com/in/jonathan-jerez-uribe-501790288
+END:VCARD`;
+            const blob = new Blob([vcard], { type: 'text/vcard' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = 'Jonathan_Jerez.vcf';
+            link.click();
+        }
+    </script>
+</body>
+</html>
